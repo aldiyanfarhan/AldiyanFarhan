@@ -5,11 +5,28 @@ import {
   Group,
   Header,
   Text,
-  ThemeIcon,
+  Footer,
+  ActionIcon,
+  ColorScheme,
+  MantineProvider,
+  ColorSchemeProvider,
+  Switch,
+  useMantineTheme,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faShirt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDumpster,
+  faDumpsterFire,
+  faEnvelope,
+  faMoon,
+  faPenToSquare,
+  faPhoneVolume,
+  faShirt,
+  faSun,
+  faToriiGate,
+} from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 export function Landing(): JSX.Element {
   const images = [
@@ -24,34 +41,93 @@ export function Landing(): JSX.Element {
     </Carousel.Slide>
   ));
 
-  return (
-    <AppShell>
-      <Header height={75} p="md" fixed>
-        <Group spacing="xs">
-          {/* <ThemeIcon icon={faShirt} size="xl" style={{ color: "#F06595" }} /> */}
-          <Text
-            variant="gradient"
-            fz={25}
-            fw={700}
-            gradient={{ from: "#A61E4D", to: "cyan", deg: 45 }}
-          >
-            You're finally awake, welcome.
-          </Text>
-        </Group>
-      </Header>
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const theme = useMantineTheme();
 
-      <Stack>
-        <Carousel
-          slideSize="70%"
-          height={600}
-          slideGap="md"
-          loop
-          dragFree
-          withIndicators
+  return (
+    <ColorSchemeProvider
+      colorScheme={colorScheme}
+      toggleColorScheme={toggleColorScheme}
+    >
+      <MantineProvider
+        theme={{ colorScheme }}
+        withGlobalStyles
+        withNormalizeCSS
+      >
+        <AppShell
+          header={
+            <Header height={65} p="sm">
+              <Group position="apart">
+                <Group spacing="sm">
+                  <FontAwesomeIcon icon={faToriiGate} />
+                  <Text
+                    variant="gradient"
+                    fz={25}
+                    fw={700}
+                    gradient={{ from: "pink.7", to: "pink.9", deg: 45 }}
+                  >
+                    You're finally awake, welcome
+                  </Text>
+                  <FontAwesomeIcon icon={faToriiGate} />
+                </Group>
+                <Group>
+                  <ActionIcon size="lg" radius="md">
+                    <FontAwesomeIcon icon={faPhoneVolume} size="lg" />
+                  </ActionIcon>
+                  <ActionIcon size="lg" radius="md">
+                    <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                  </ActionIcon>
+                  <Switch
+                    onChange={(event) => {
+                      setColorScheme("dark");
+                      if (colorScheme === "dark") {
+                        setColorScheme("light");
+                      }
+                    }}
+                    size="md"
+                    color={colorScheme === "dark" ? "dark" : "grey.0"}
+                    onLabel={
+                      <FontAwesomeIcon
+                        size="sm"
+                        icon={faSun}
+                        color={theme.colors.yellow[4]}
+                      />
+                    }
+                    offLabel={
+                      <FontAwesomeIcon
+                        size="sm"
+                        icon={faMoon}
+                        color={theme.colors.gray[6]}
+                      />
+                    }
+                  />
+                </Group>
+              </Group>
+            </Header>
+          }
+          footer={
+            <Footer height={60} p="md">
+              To be Designed
+            </Footer>
+          }
         >
-          {slides}
-        </Carousel>
-      </Stack>
-    </AppShell>
+          {/* Body */}
+          <Stack>
+            <Carousel
+              slideSize="70%"
+              height={600}
+              slideGap="md"
+              loop
+              dragFree
+              withIndicators
+            >
+              {slides}
+            </Carousel>
+          </Stack>
+        </AppShell>
+      </MantineProvider>
+    </ColorSchemeProvider>
   );
 }
